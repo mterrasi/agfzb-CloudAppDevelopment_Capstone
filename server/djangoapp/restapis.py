@@ -13,7 +13,19 @@ def get_request(url, **kwargs):
 	print(kwargs)
 	print('GET from {} '.format(url))
 	try:
-		response = requests.get(url, headers={'Content-Type': 'application/json'}, params=kwargs)
+		if 'api_key' in kwargs.keys():
+			response = requests.get(
+				url,
+				headers={'Content-Type': 'application/json'},
+				params=kwargs,
+				auth=HTTPBasicAuth('api_key', kwargs["api_key"])
+			)
+		else:
+			response = requests.get(
+				url,
+				headers={'Content-Type': 'application/json'},
+				params=kwargs,
+			)
 	except:
 		print('Network exception occured')
 
@@ -115,18 +127,13 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(dealer_review, **kwargs):
 	url = ''
-	api_key = ''
 	params = dict()
 	params["text"] = kwargs["text"]
-	params["version"] = kwargs["version"]
+	params["version"] = ''
 	params["features"] = 'sentiment'
 	params["return_analyzed_text"] = False
-	response = get_request(
-		url,
-		params=params,
-		headers={'Context-Type': 'application/json'},
-		auth=HTTPBasicAuth('apikey', api_key)
-	)
+	params["api_key"] = ''
+	response = get_request(url, params)
 	return response["sentiment"]["document"]["label"]
 
 
