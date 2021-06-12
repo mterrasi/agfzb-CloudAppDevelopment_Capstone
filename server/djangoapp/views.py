@@ -1,6 +1,9 @@
 from requests.api import post
-from server.djangoapp.models import CarModel
-from server.djangoapp.restapis import get_dealer_reviews_from_cf, get_dealers_from_cf
+#path not working
+#from server.djangoapp.models import CarModel
+from .models import CarModel
+#from server.djangoapp.restapis import get_dealer_reviews_from_cf, get_dealers_from_cf
+from .restapis import get_dealer_reviews_from_cf, get_dealers_from_cf
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
@@ -96,8 +99,7 @@ def get_dealerships(request):
     if request.method == "GET":
         url = 'https://5df47d1d.us-south.apigw.appdomain.cloud/dealership/dealer-get'
         dealerships = get_dealers_from_cf(url)
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
-        context['dealer_names'] = dealer_names
+        context['dealerships'] = dealerships
         return render(request, 'djangoapp/index.html', context)
 
 
@@ -115,7 +117,7 @@ def get_dealer_details(request, dealerId):
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
-@csrf_exempt
+#@csrf_exempt
 def add_review(request, dealer_id):
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -138,4 +140,16 @@ def add_review(request, dealer_id):
             url = ''
             response = post_request(url, json_payload, dealer_id=dealer_id)
             return redirect('djangoapp:dealer_details', dealer_id=dealer_id)
+        else:
+            response = HttpResponse('You must authenticate')
+            response.status_code = 401
+            return response
+    elif request.method == 'GET':
+        context = {}
+        url = ''
+        cars = list(CarModel.objects.filter(dealer_id=dealer_id))
+        context["cars"] = cars
+        reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        context["reviews"] = reviews
+        return render(request, 'djangoapp/add_review.html', context)
 

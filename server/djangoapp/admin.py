@@ -1,4 +1,6 @@
-from server.djangoapp.models import CarMake, CarModel
+#path not working
+#from server.djangoapp.models import CarMake, CarModel
+from .models import CarMake, CarModel
 from django.contrib import admin
 from .models import CarMake, CarModel
 

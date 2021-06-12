@@ -73,7 +73,7 @@ def post_request(url, json_payload, **kwargs):
 # - Parse JSON results into a CarDealer object list
 def get_dealers_from_cf(url, **kwargs):
 	results = []
-	json_result = get_request(url)
+	json_result = get_request(url, **kwargs)
 	if json_result:
 		dealers = json_result["rows"]
 		for dealer in dealers:
@@ -83,7 +83,7 @@ def get_dealers_from_cf(url, **kwargs):
 				city=dealer_doc["city"],
 				full_name=dealer_doc["full_name"],
 				id=dealer_doc["id"],
-				lat=dealer_doc["id"],
+				lat=dealer_doc["lat"],
 				long=dealer_doc["long"],
 				short_name=dealer_doc["short_name"],
 				st=dealer_doc["st"],
