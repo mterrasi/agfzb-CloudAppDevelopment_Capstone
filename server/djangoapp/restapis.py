@@ -99,7 +99,7 @@ def get_dealers_from_cf(url, **kwargs):
 # - Parse JSON results into a DealerView object list
 def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
 	results = []
-	json_result = get_request(url, dealerId=dealer_id)
+	json_result = get_request(url, dealer_id=dealer_id)
 	if json_result:
 		reviews = json_result["rows"]
 		for review in reviews:
@@ -125,15 +125,15 @@ def get_dealer_reviews_from_cf(url, dealer_id, **kwargs):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-def analyze_review_sentiments(dealer_review, **kwargs):
+def analyze_review_sentiments(text, **kwargs):
 	url = ''
 	params = dict()
-	params["text"] = kwargs["text"]
+	params["text"] = text
 	params["version"] = ''
 	params["features"] = 'sentiment'
 	params["return_analyzed_text"] = False
 	params["api_key"] = ''
-	response = get_request(url, params)
+	response = get_request(url, **params)
 	return response["sentiment"]["document"]["label"]
 
 
